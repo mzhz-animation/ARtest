@@ -2,65 +2,55 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Storybook Image Tracking AR</title>
-    <!-- Include A-Frame and MindAR Libraries -->
+    <title>3D Model Web Viewer</title>
+    <!-- Include A-Frame Library -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <!-- Include A-Frame Extras for animation-mixer support -->
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     
     <style>
       body { 
         margin: 0; 
         overflow: hidden; 
-        background: #000;
+        background: #111;
         font-family: sans-serif;
       }
-      /* Full-screen tap overlay raised up by 20% to prevent bottom-bar cropping on modern phones */
-      .ar-overlay {
+      /* Clean overlay message */
+      .info-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.85);
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.75);
         color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        padding: 10px 20px;
+        border-radius: 8px;
         text-align: center;
-        z-index: 9999;
-        cursor: pointer;
-        padding: 20px 20px 80px 20px; /* Added extra bottom padding to lift content up */
-        box-sizing: border-box;
+        z-index: 999;
+        pointer-events: none;
       }
-      .ar-overlay h2 {
-        margin: 0 0 10px 0;
-        font-size: 24px;
+      .info-overlay h2 {
+        margin: 0 0 5px 0;
+        font-size: 18px;
         color: #FF5722;
       }
-      .ar-overlay p {
+      .info-overlay p {
         margin: 0;
-        font-size: 16px;
+        font-size: 14px;
         opacity: 0.9;
-      }
-      /* Hide overlay once tapped */
-      .hidden {
-        display: none !important;
       }
     </style>
   </head>
   <body>
 
-    <!-- User Interaction Gate (Optimized for Galaxy S25 and iOS Safari) -->
-    <div id="start-overlay" class="ar-overlay">
-      <h2>📖 Storybook AR</h2>
-      <p>Tap anywhere to start camera & scan book page!</p>
+    <div class="info-overlay">
+      <h2>📦 3D Model Preview Mode</h2>
+      <p>Drag to rotate view | Scroll/Pinch to zoom</p>
     </div>
 
-    <!-- MindAR Scene Setup -->
+    <!-- Standard A-Frame 3D Scene (No AR / No MindAR Tracking Required) -->
     <a-scene 
-      id="ar-scene"
-      mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;" 
+      background="color: #1a1a1a" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
@@ -71,36 +61,24 @@
         <a-asset-item id="avatarModel" src="./test.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <!-- Proper Lighting so PBR Textures (Normals/Roughness) show up correctly -->
+      <a-light type="ambient" color="#FFF" intensity="0.7"></a-light>
+      <a-light type="directional" color="#FFF" intensity="1.2" position="-1 2 1"></a-light>
+      <a-light type="directional" color="#4CB5F5" intensity="0.4" position="1 -1 -1"></a-light>
 
-      <!-- Target index 0 matches your compiled book page inside targets.mind -->
-      <a-entity mindar-image-target="targetIndex: 0">
-        <!-- 3D Model anchored to page with scale, rotation, and looping animation -->
-        <a-gltf-model 
-          src="#avatarModel" 
-          position="0 0 0" 
-          scale="0.5 0.5 0.5" 
-          rotation="0 0 0" 
-          animation-mixer>
-        </a-gltf-model>
+      <!-- Camera with mouse/touch controls enabled to inspect the character -->
+      <a-camera position="0 1.5 3" look-controls="enabled: true"></a-camera>
+
+      <!-- 3D Model Entity -->
+      <a-entity 
+        gltf-model="#avatarModel" 
+        position="0 0 0" 
+        scale="1 1 1" 
+        rotation="0 0 0" 
+        animation-mixer>
       </a-entity>
 
     </a-scene>
 
-    <script>
-      // Script to handle user tap, remove the overlay, and safely boot up MindAR
-      const overlay = document.querySelector('#start-overlay');
-      const scene = document.querySelector('#ar-scene');
-
-      overlay.addEventListener('click', () => {
-        overlay.classList.add('hidden');
-        
-        // Explicitly start the MindAR system after user interaction
-        const mindarSystem = scene.systems["mindar-image-system"];
-        if (mindarSystem) {
-          mindarSystem.start();
-        }
-      });
-    </script>
   </body>
 </html>
