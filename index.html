@@ -2,55 +2,37 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Model Web Viewer</title>
-    <!-- Include A-Frame Library -->
+    <title>Storybook Image Tracking AR</title>
+    <!-- Include A-Frame and MindAR Libraries -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <!-- Include A-Frame Extras for animation-mixer support -->
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
-      body { 
-        margin: 0; 
-        overflow: hidden; 
-        background: #111;
-        font-family: sans-serif;
-      }
-      /* Clean overlay message */
-      .info-overlay {
-        position: fixed;
+      body { margin: 0; overflow: hidden; }
+      /* Optional scan overlay prompt for kids */
+      .scan-hint {
+        position: absolute;
         top: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.75);
-        color: white;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
         padding: 10px 20px;
-        border-radius: 8px;
-        text-align: center;
+        border-radius: 20px;
+        font-family: sans-serif;
+        font-size: 14px;
         z-index: 999;
         pointer-events: none;
-      }
-      .info-overlay h2 {
-        margin: 0 0 5px 0;
-        font-size: 18px;
-        color: #FF5722;
-      }
-      .info-overlay p {
-        margin: 0;
-        font-size: 14px;
-        opacity: 0.9;
       }
     </style>
   </head>
   <body>
 
-    <div class="info-overlay">
-      <h2>📦 3D Model Preview Mode</h2>
-      <p>Drag to rotate view | Scroll/Pinch to zoom</p>
-    </div>
+    <div class="scan-hint">📖 Point camera at the book page!</div>
 
-    <!-- Standard A-Frame 3D Scene (No AR / No MindAR Tracking Required) -->
+    <!-- MindAR Scene Setup -->
     <a-scene 
-      background="color: #1a1a1a" 
+      mindar-image="imageTargetSrc: ./targets.mind;" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
@@ -61,24 +43,20 @@
         <a-asset-item id="avatarModel" src="./test.glb"></a-asset-item>
       </a-assets>
 
-      <!-- Proper Lighting so PBR Textures (Normals/Roughness) show up correctly -->
-      <a-light type="ambient" color="#FFF" intensity="0.7"></a-light>
-      <a-light type="directional" color="#FFF" intensity="1.2" position="-1 2 1"></a-light>
-      <a-light type="directional" color="#4CB5F5" intensity="0.4" position="1 -1 -1"></a-light>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Camera with mouse/touch controls enabled to inspect the character -->
-      <a-camera position="0 1.5 3" look-controls="enabled: true"></a-camera>
-
-      <!-- 3D Model Entity -->
-      <a-entity 
-        gltf-model="#avatarModel" 
-        position="0 0 0" 
-        scale="1 1 1" 
-        rotation="0 0 0" 
-        animation-mixer>
+      <!-- Target index 0 matches the image inside targets.mind -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <!-- 3D Model anchored to page with scale, rotation, and autoplay animation -->
+        <a-gltf-model 
+          src="#avatarModel" 
+          position="0 0 0" 
+          scale="0.5 0.5 0.5" 
+          rotation="0 0 0" 
+          animation-mixer>
+        </a-gltf-model>
       </a-entity>
 
     </a-scene>
-
   </body>
 </html>
