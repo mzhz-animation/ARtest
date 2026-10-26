@@ -2,8 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Character Showcase</title>
-    <!-- A-Frame & Extras -->
+    <title>3D Character & Diorama Showcase</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     
@@ -11,103 +10,140 @@
       body { 
         margin: 0; 
         overflow: hidden; 
-        background: #0d0f12; 
+        background: #0b0d10; 
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
       }
 
-      /* Glassmorphism Frame Overlay */
+      /* Landing Page / Framing Overlay */
+      #welcome-screen {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, #161b22 0%, #0b0d10 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+
+      .welcome-card {
+        background: rgba(22, 27, 34, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px 32px;
+        text-align: center;
+        max-width: 360px;
+        width: 90%;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      }
+
+      .welcome-card h1 {
+        margin: 0 0 8px 0;
+        font-size: 22px;
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: 0.5px;
+      }
+
+      .welcome-card p {
+        margin: 0 0 24px 0;
+        font-size: 13px;
+        color: #8b949e;
+        line-height: 1.5;
+      }
+
+      .enter-btn {
+        background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);
+        width: 100%;
+      }
+
+      .enter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(46, 160, 67, 0.6);
+      }
+
+      /* Subtle corner framing lines when viewing 3D */
       .viewer-frame {
         position: fixed;
         inset: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 16px;
         pointer-events: none;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 20px;
-        box-sizing: border-box;
         z-index: 10;
-      }
-
-      .header-card {
-        background: rgba(18, 20, 26, 0.85);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 12px 20px;
-        border-radius: 12px;
-        pointer-events: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        max-width: 320px;
-      }
-      .header-card h1 {
-        margin: 0 0 4px 0;
-        font-size: 16px;
-        font-weight: 600;
-        color: #ffffff;
-      }
-      .header-card p {
-        margin: 0;
-        font-size: 12px;
-        color: #8b949e;
-      }
-
-      .footer-card {
-        align-self: center;
-        background: rgba(18, 20, 26, 0.85);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 10px 20px;
-        border-radius: 30px;
-        pointer-events: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      }
-      .footer-card p {
-        margin: 0;
-        font-size: 12px;
-        color: #c9d1d9;
+        display: none;
       }
     </style>
   </head>
   <body>
 
-    <!-- UI Overlay -->
-    <div class="viewer-frame">
-      <div class="header-card">
-        <h1>Character & Diorama</h1>
-        <p>Interactive 3D Pipeline Preview</p>
-      </div>
-      
-      <div class="footer-card">
-        <p>💡 Drag to rotate &nbsp;•&nbsp; Pinch to zoom</p>
+    <!-- Landing / Entry UI Screen -->
+    <div id="welcome-screen">
+      <div class="welcome-card">
+        <h1>3D Interactive Viewer</h1>
+        <p>Explore the character and environment model in real-time 3D space.</p>
+        <button class="enter-btn" onclick="startExperience()">Enter Experience</button>
       </div>
     </div>
 
-    <!-- 3D Scene -->
-    <a-scene background="color: #0d0f12" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights">
+    <!-- Framing Border (Appears after clicking enter) -->
+    <div class="viewer-frame" id="viewerFrame"></div>
+
+    <!-- A-Frame 3D Scene (Loads character.glb and diorama.glb separately) -->
+    <a-scene background="color: #0b0d10" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights">
       
       <a-assets>
-        <!-- Correct relative path to character.glb in root directory -->
-        <a-asset-item id="avatarModel" src="./character.glb"></a-asset-item>
+        <a-asset-item id="characterModel" src="./character.glb"></a-asset-item>
+        <a-asset-item id="dioramaModel" src="./diorama.glb"></a-asset-item>
       </a-assets>
 
-      <!-- Balanced Lights -->
+      <!-- Balanced 3-Point Lighting -->
       <a-light type="ambient" color="#ffffff" intensity="0.8"></a-light>
       <a-light type="directional" color="#ffffff" intensity="1.2" position="-1 2 1"></a-light>
       <a-light type="directional" color="#4CB5F5" intensity="0.4" position="1 -1 -1"></a-light>
 
-      <a-camera position="0 1.5 3" look-controls="enabled: true"></a-camera>
+      <!-- Camera pulled back further (Z = 4.5) for a wider, comfortable framing -->
+      <a-camera position="0 1.5 4.5" look-controls="enabled: true"></a-camera>
 
-      <!-- 3D Model -->
+      <!-- 1st Model: Character with Animation -->
       <a-entity 
-        gltf-model="#avatarModel" 
+        gltf-model="#characterModel" 
         position="0 0 0" 
         scale="1 1 1" 
         rotation="0 0 0" 
-        animation-mixer>
+        animation-mixer="loop: repeat">
+      </a-entity>
+
+      <!-- 2nd Model: Diorama Background (Loads with its own clean textures!) -->
+      <a-entity 
+        gltf-model="#dioramaModel" 
+        position="0 0 0" 
+        scale="1 1 1" 
+        rotation="0 0 0">
       </a-entity>
 
     </a-scene>
 
+    <!-- Script to hide landing page and reveal full-screen viewer -->
+    <script>
+      function startExperience() {
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const viewerFrame = document.getElementById('viewerFrame');
+        
+        welcomeScreen.style.opacity = '0';
+        welcomeScreen.style.visibility = 'hidden';
+        viewerFrame.style.display = 'block';
+      }
+    </script>
   </body>
 </html>
