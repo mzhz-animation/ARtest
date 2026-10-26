@@ -55,3 +55,60 @@
 
       /* Bottom Control Hints Card */
       .footer-card {
+        align-self: center;
+        background: rgba(18, 20, 26, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 10px 20px;
+        border-radius: 30px;
+        pointer-events: auto;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      .footer-card p {
+        margin: 0;
+        font-size: 12px;
+        color: #c9d1d9;
+        letter-spacing: 0.2px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Framing Overlay UI -->
+    <div class="viewer-frame">
+      <div class="header-card">
+        <h1>Character & Diorama</h1>
+        <p>Interactive 3D Pipeline Preview</p>
+      </div>
+      
+      <div class="footer-card">
+        <p>💡 Drag to rotate &nbsp;•&nbsp; Pinch/Scroll to zoom</p>
+      </div>
+    </div>
+
+    <!-- A-Frame 3D Scene -->
+    <a-scene background="color: #0d0f12" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights">
+      
+      <a-assets>
+        <a-asset-item id="avatarModel" src="./character.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- Balanced 3Point Studio Lighting -->
+      <a-light type="ambient" color="#ffffff" intensity="0.7"></a-light>
+      <a-light type="directional" color="#ffffff" intensity="1.2" position="-1 2 1"></a-light>
+      <a-light type="directional" color="#4CB5F5" intensity="0.4" position="1 -1 -1"></a-light>
+
+      <a-camera position="0 1.5 3" look-controls="enabled: true"></a-camera>
+
+      <!-- 3D Model Entity -->
+      <a-entity 
+        gltf-model="#avatarModel" 
+        position="0 0 0" 
+        scale="1 1 1" 
+        rotation="0 0 0" 
+        animation-mixer>
+      </a-entity>
+
+    </a-scene>
+  </body>
+</html>
