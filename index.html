@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Character Showcase</title>
+    <!-- A-Frame & Extras -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     
@@ -14,7 +15,7 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
       }
 
-      /* Premium Framing UI Wrapper */
+      /* Glassmorphism Frame Overlay */
       .viewer-frame {
         position: fixed;
         inset: 16px;
@@ -29,7 +30,6 @@
         z-index: 10;
       }
 
-      /* Top Header Card */
       .header-card {
         background: rgba(18, 20, 26, 0.85);
         backdrop-filter: blur(12px);
@@ -45,7 +45,6 @@
         font-size: 16px;
         font-weight: 600;
         color: #ffffff;
-        letter-spacing: 0.3px;
       }
       .header-card p {
         margin: 0;
@@ -53,7 +52,6 @@
         color: #8b949e;
       }
 
-      /* Bottom Control Hints Card */
       .footer-card {
         align-self: center;
         background: rgba(18, 20, 26, 0.85);
@@ -68,13 +66,12 @@
         margin: 0;
         font-size: 12px;
         color: #c9d1d9;
-        letter-spacing: 0.2px;
       }
     </style>
   </head>
   <body>
 
-    <!-- Framing Overlay UI -->
+    <!-- UI Overlay -->
     <div class="viewer-frame">
       <div class="header-card">
         <h1>Character & Diorama</h1>
@@ -82,25 +79,26 @@
       </div>
       
       <div class="footer-card">
-        <p>💡 Drag to rotate &nbsp;•&nbsp; Pinch/Scroll to zoom</p>
+        <p>💡 Drag to rotate &nbsp;•&nbsp; Pinch to zoom</p>
       </div>
     </div>
 
-    <!-- A-Frame 3D Scene -->
+    <!-- 3D Scene -->
     <a-scene background="color: #0d0f12" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights">
       
       <a-assets>
+        <!-- Correct relative path to character.glb in root directory -->
         <a-asset-item id="avatarModel" src="./character.glb"></a-asset-item>
       </a-assets>
 
-      <!-- Balanced 3Point Studio Lighting -->
-      <a-light type="ambient" color="#ffffff" intensity="0.7"></a-light>
+      <!-- Balanced Lights -->
+      <a-light type="ambient" color="#ffffff" intensity="0.8"></a-light>
       <a-light type="directional" color="#ffffff" intensity="1.2" position="-1 2 1"></a-light>
       <a-light type="directional" color="#4CB5F5" intensity="0.4" position="1 -1 -1"></a-light>
 
       <a-camera position="0 1.5 3" look-controls="enabled: true"></a-camera>
 
-      <!-- 3D Model Entity -->
+      <!-- 3D Model -->
       <a-entity 
         gltf-model="#avatarModel" 
         position="0 0 0" 
@@ -110,5 +108,6 @@
       </a-entity>
 
     </a-scene>
+
   </body>
 </html>
