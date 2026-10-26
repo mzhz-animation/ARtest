@@ -2,76 +2,49 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Character Viewer</title>
-    <!-- A-Frame and Animation Player -->
+    <title>3D Character Viewer - Diagnostic</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     
     <style>
-      body { 
-        margin: 0; 
-        overflow: hidden; 
-        background: #111;
-        font-family: sans-serif;
-      }
-      /* Simple clean instruction banner at the top */
+      body { margin: 0; overflow: hidden; background: #111; font-family: sans-serif; }
       .viewer-ui {
-        position: fixed;
-        top: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.75);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 8px;
-        text-align: center;
-        z-index: 999;
-        pointer-events: none;
+        position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.75); color: white; padding: 8px 16px;
+        border-radius: 8px; text-align: center; z-index: 999; pointer-events: none;
       }
-      .viewer-ui p {
-        margin: 0;
-        font-size: 13px;
-        letter-spacing: 0.5px;
-      }
+      .viewer-ui p { margin: 0; font-size: 13px; }
     </style>
   </head>
   <body>
 
     <div class="viewer-ui">
-      <p>✨ 3D Model Viewer — Drag to rotate, pinch to zoom</p>
+      <p>🔍 Diagnostic Mode: Look for a Red Cube or your Model</p>
     </div>
 
-    <!-- Standard A-Frame Scene (No AR, No MindAR, Loads Instantly) -->
-    <a-scene 
-      background="color: #1a1a1a" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
+    <a-scene background="color: #1a1a1a">
       
       <a-assets>
-        <!-- Loads your test.glb file directly -->
         <a-asset-item id="avatarModel" src="./test.glb"></a-asset-item>
       </a-assets>
 
-      <!-- Studio Lighting so your PBR textures and normal maps render crisply -->
       <a-light type="ambient" color="#FFF" intensity="0.8"></a-light>
       <a-light type="directional" color="#FFF" intensity="1.2" position="-1 2 1"></a-light>
-      <a-light type="directional" color="#4CB5F5" intensity="0.4" position="1 -1 -1"></a-light>
 
-      <!-- Camera with orbit controls enabled so you can rotate/zoom around your model -->
       <a-camera position="0 1.5 3" look-controls="enabled: true"></a-camera>
 
-      <!-- Your 3D Character Model -->
+      <!-- 1. FALLBACK RED CUBE: If you see this, A-Frame is working fine -->
+      <a-box position="-1 0 0" scale="0.5 0.5 0.5" color="#EF2D5E"></a-box>
+
+      <!-- 2. YOUR GLB MODEL -->
       <a-entity 
         gltf-model="#avatarModel" 
-        position="0 0 0" 
+        position="1 0 0" 
         scale="1 1 1" 
         rotation="0 0 0" 
         animation-mixer>
       </a-entity>
 
     </a-scene>
-
   </body>
 </html>
